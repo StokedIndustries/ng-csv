@@ -67,11 +67,17 @@ angular.module('ngCsv.directives').
            * @returns {*}
            */
           $scope.buildCSV = function () {
-            var deferred = $q.defer();
+            var deferred = $q.defer(),
+                data = null;
 
             $element.addClass($attrs.ngCsvLoadingClass || 'ng-csv-loading');
 
-            CSV.stringify($scope.data(), getBuildCsvOptions()).then(function (csv) {
+            data = $scope.data();
+            if ( angular.isFunction(data) ) {
+              data = data();
+            }
+
+            CSV.stringify(data, getBuildCsvOptions()).then(function (csv) {
               $scope.csv = csv;
               $element.removeClass($attrs.ngCsvLoadingClass || 'ng-csv-loading');
               deferred.resolve(csv);
